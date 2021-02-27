@@ -11,30 +11,29 @@ import com.jadic.utils.ConstDefine;
 import com.jadic.utils.KKTool;
 
 /**
- * 登录应答
+ * 发送交易数据条数
  */
-public class CmdLoginResp_S2C extends TcpCmdHead {
+public class CmdSendData_S2C extends TcpCmdHead {
 
-	private byte loginRet;//登录结果
+	private byte[] data;//交易数据
 	
-	public CmdLoginResp_S2C() {
+	public CmdSendData_S2C() {
 		super();
-		this.loginRet = 0;
-		this.setCmdLen(ConstDefine.MIN_CMD_LENGTH - 2 + 1);
-		this.setCmdFlag(ConstDefine.CMD_LOGIN_RESP);
+		this.setCmdLen(ConstDefine.MIN_CMD_LENGTH - 2 + 256);
+		this.setCmdFlag(ConstDefine.CMD_SEND_DATA);
 	}
 
 	@Override
 	public int getCmdSize() {
-		return super.getCmdSize() + 1 + this.getCmdEndSize();
+		return super.getCmdSize() + 256 + this.getCmdEndSize();
 	}
 
 	@Override
 	public boolean fillChannelBuffer(ChannelBuffer channelBuffer) {
-		if (!super.fillChannelBuffer(channelBuffer))
+		if (data == null || !super.fillChannelBuffer(channelBuffer))
 			return false;
 		try {
-			channelBuffer.writeByte(loginRet);
+			channelBuffer.writeBytes(data);
 			byte[] d = new byte[this.getCmdSize() - this.getCmdHeadTailAndXorSize()];//完整的长度减去校验位和头尾
 			channelBuffer.getBytes(this.getCmdXorStartIndex(), d, 0, d.length);
 			channelBuffer.writeByte(KKTool.getXorSum(d));
@@ -45,12 +44,12 @@ public class CmdLoginResp_S2C extends TcpCmdHead {
 		}
 	}
 
-	public byte getLoginRet() {
-		return loginRet;
+	public byte[] getData() {
+		return data;
 	}
 
-	public void setLoginRet(byte loginRet) {
-		this.loginRet = loginRet;
+	public void setData(byte[] data) {
+		this.data = data;
 	}
-	
+
 }

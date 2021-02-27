@@ -11,22 +11,22 @@ import com.jadic.utils.ConstDefine;
 import com.jadic.utils.KKTool;
 
 /**
- * 登录应答
+ * 发送交易数据条数
  */
-public class CmdLoginResp_S2C extends TcpCmdHead {
+public class CmdSendDataOK_S2C extends TcpCmdHead {
 
-	private byte loginRet;//登录结果
+	private int dataCount;
 	
-	public CmdLoginResp_S2C() {
+	public CmdSendDataOK_S2C() {
 		super();
-		this.loginRet = 0;
-		this.setCmdLen(ConstDefine.MIN_CMD_LENGTH - 2 + 1);
-		this.setCmdFlag(ConstDefine.CMD_LOGIN_RESP);
+		this.dataCount = 0;
+		this.setCmdLen(ConstDefine.MIN_CMD_LENGTH - 2 + 4);
+		this.setCmdFlag(ConstDefine.CMD_SEND_OK);
 	}
 
 	@Override
 	public int getCmdSize() {
-		return super.getCmdSize() + 1 + this.getCmdEndSize();
+		return super.getCmdSize() + 4 + this.getCmdEndSize();
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class CmdLoginResp_S2C extends TcpCmdHead {
 		if (!super.fillChannelBuffer(channelBuffer))
 			return false;
 		try {
-			channelBuffer.writeByte(loginRet);
+			channelBuffer.writeInt(dataCount);
 			byte[] d = new byte[this.getCmdSize() - this.getCmdHeadTailAndXorSize()];//完整的长度减去校验位和头尾
 			channelBuffer.getBytes(this.getCmdXorStartIndex(), d, 0, d.length);
 			channelBuffer.writeByte(KKTool.getXorSum(d));
@@ -45,12 +45,12 @@ public class CmdLoginResp_S2C extends TcpCmdHead {
 		}
 	}
 
-	public byte getLoginRet() {
-		return loginRet;
+	public int getDataCount() {
+		return dataCount;
 	}
 
-	public void setLoginRet(byte loginRet) {
-		this.loginRet = loginRet;
+	public void setDataCount(int dataCount) {
+		this.dataCount = dataCount;
 	}
-	
+
 }
