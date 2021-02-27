@@ -9,11 +9,11 @@ import org.jboss.netty.buffer.ChannelBuffer;
 import com.jadic.tcp.cmd.TcpCmdHead;
 
 /**
- * 请求数据命令
+ * 客户端登录命令
  */
-public class CmdGetData_C2S extends TcpCmdHead {
+public class CmdLogin_C2S extends TcpCmdHead {
 	
-	public CmdGetData_C2S() {
+	public CmdLogin_C2S() {
 		super();
 	}
 
